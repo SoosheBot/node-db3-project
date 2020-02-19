@@ -42,4 +42,32 @@ function add(scheme) {
     return db("schemes")
     .first()
     .insert(scheme);
-}
+};
+
+function addStep(step, scheme_id) {
+    return db("steps as s")
+    .select("sc.id as scheme_id",
+    "s.step_number as step_number",
+    "s.instructions as instructions"
+    )
+    .insert(step)
+    .join("steps as s", 
+    "s.step_number", 
+    "s.instructions",
+    "sc.id", "=", "s.scheme_id" )
+    .where("scheme_id", scheme_id)
+    .then(count => findById(id));
+};
+
+function update(changes, id) {
+    return db("schemes", "id")
+    .where({ id })
+    .update(changes, "*")
+    .then(count => findById(id));
+};
+
+function remove(id) {
+    return db("schemes")
+    .where({ id })
+    .del();
+};
